@@ -9,8 +9,29 @@ function isChecked(string $category, string $option): string
 	return ($category == $option) ? "checked='checked'" : "";
 }
 
-function filterData(array $data,string $category, int $loop) {
+function filterData(array $data,string $category) :array {
+   $arrMod =[];
+   for ($i=0; $i < count($data); $i++) { 
 
+      if ($category == 0) {
+         $arrMod[] = [
+            'image' => $data[$i]['image'],
+            'id' => $data[$i]['id'],
+            'product' => $data[$i]['product'],
+            'price'=> $data[$i]['price'],
+            'category'=> $data[$i]['category'],
+         ];
+      }elseif ($category == $data[$i]['category']) {
+         $arrMod[] = [
+            'image' => $data[$i]['image'],
+            'id' => $data[$i]['id'],
+            'product' => $data[$i]['product'],
+            'price'=> $data[$i]['price'],
+            'category'=> $data[$i]['category'],
+         ];
+      }
+   }
+   return $arrMod;
 }
 
 
@@ -40,13 +61,6 @@ function getCategoryName(string $category) :string {
 
 function importFile(string $file): array {
    $handle = fopen($file, "r");
-   $keys = [
-      'image',
-      'id' ,
-      'product',
-      'price',
-      'category'
-    ];
    $output = [];
    while ($line = fgetcsv($handle)) {
       $output[] = [
@@ -259,7 +273,7 @@ $data = importFile("product.csv");
    <!-- electronic section start -->
    <div class="fashion_section">
       <div id="electronic_main_slider" class="carousel slide" data-ride="carousel">
-         <?= drawProductList($data,'getCategoryName',$category,'filterData')?>
+         <?php drawProductList(filterData($data,$category),'getCategoryName',$category);?>
          <a class="carousel-control-prev" href="#electronic_main_slider" role="button" data-slide="prev">
             <i class="fa fa-angle-left"></i>
          </a>
